@@ -8,6 +8,13 @@ CLAUDE.md
 /.next/
 /out/
 
+# database
+prisma/dev.db
+
+# env
+.env
+.env.local
+
 # misc
 .DS_Store
 *.tsbuildinfo

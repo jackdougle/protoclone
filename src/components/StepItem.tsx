@@ -20,6 +20,9 @@ interface Props {
   onUpdate: (step: Step) => void;
   onDelete: () => void;
   onMove: (direction: 'up' | 'down') => void;
+  readOnly?: boolean;
+  commentCount?: number;
+  onToggleComments?: () => void;
 }
 
 const insertButtons: { type: InlineType; label: string }[] = [
@@ -38,7 +41,7 @@ const dotColors: Record<InlineType, string> = {
   reagent: 'bg-purple-400',
 };
 
-export default function StepItem({ step, index, isFirst, isLast, onUpdate, onDelete, onMove }: Props) {
+export default function StepItem({ step, index, isFirst, isLast, onUpdate, onDelete, onMove, readOnly, commentCount = 0, onToggleComments }: Props) {
   const [inserting, setInserting] = useState<InlineType | null>(null);
   const [editingSegment, setEditingSegment] = useState<string | null>(null);
 
@@ -188,6 +191,7 @@ export default function StepItem({ step, index, isFirst, isLast, onUpdate, onDel
                     onSelect={() => handleTextSelect(seg.id)}
                     onKeyUp={() => handleTextSelect(seg.id)}
                     placeholder={step.segments.length === 1 ? 'Describe this step...' : ''}
+                    readOnly={readOnly}
                     className="inline-block text-sm border-none outline-none min-w-[60px] flex-1 py-0.5 placeholder:text-neutral-300"
                   />
                 );
@@ -214,7 +218,22 @@ export default function StepItem({ step, index, isFirst, isLast, onUpdate, onDel
         </div>
 
         {/* Step controls */}
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+        <div className="flex items-center gap-1 shrink-0">
+          {/* Comment button — always visible */}
+          {onToggleComments && (
+            <button
+              onClick={onToggleComments}
+              className={`p-1 cursor-pointer transition-colors ${commentCount > 0 ? 'text-neutral-500' : 'text-neutral-300 hover:text-neutral-500'}`}
+              title={`${commentCount} comment${commentCount !== 1 ? 's' : ''}`}
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 3a1 1 0 011-1h10a1 1 0 011 1v6a1 1 0 01-1 1H5l-3 3V3z" />
+              </svg>
+              {commentCount > 0 && <span className="text-[9px] ml-0.5">{commentCount}</span>}
+            </button>
+          )}
+        </div>
+        <div className={`flex items-center gap-1 ${readOnly ? 'hidden' : 'opacity-0 group-hover:opacity-100'} transition-opacity shrink-0`}>
           <button
             onClick={() => onMove('up')}
             disabled={isFirst}
@@ -248,7 +267,7 @@ export default function StepItem({ step, index, isFirst, isLast, onUpdate, onDel
       </div>
 
       {/* Insert toolbar */}
-      <div className="px-4 pb-3 pt-1">
+      {!readOnly && <div className="px-4 pb-3 pt-1">
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className="text-[10px] text-neutral-300 uppercase tracking-wider mr-1 select-none">Insert:</span>
           {insertButtons.map((btn) => (
@@ -272,7 +291,7 @@ export default function StepItem({ step, index, isFirst, isLast, onUpdate, onDel
             {renderInlineInput(inserting)}
           </div>
         )}
-      </div>
+      </div>}
     </div>
   );
 }

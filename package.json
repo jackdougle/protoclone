@@ -22,7 +22,7 @@
   "homepage": "https://github.com/UA-iGEM/protoclone#readme",
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
-    "@prisma/client": "^7.6.0",
+    "@prisma/client": "^5.22.0",
     "bcryptjs": "^3.0.3",
     "next": "^16.2.1",
     "next-auth": "^5.0.0-beta.30",
@@ -35,7 +35,7 @@
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "postcss": "^8.5.8",
-    "prisma": "^7.6.0",
+    "prisma": "^5.22.0",
     "tailwindcss": "^4.2.2",
     "typescript": "^6.0.2"
   }

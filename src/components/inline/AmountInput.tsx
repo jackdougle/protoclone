@@ -73,7 +73,7 @@ export default function AmountInput({ initial, onConfirm, onCancel }: Props) {
       <button type="submit" className="px-3 py-1.5 text-sm bg-black text-white rounded hover:bg-neutral-800 cursor-pointer">
         OK
       </button>
-      <button type="button" onClick={onCancel} className="px-2 py-1.5 text-sm text-neutral-400 hover:text-neutral-600 cursor-pointer">
+      <button type="button" onClick={onCancel} className="px-2 py-1.5 text-sm text-black cursor-pointer">
         Cancel
       </button>
     </form>

@@ -172,7 +172,7 @@ export default function ProtocolEditorPage() {
       {/* Header */}
       <header className="border-b border-neutral-200 sticky top-0 bg-white z-10">
         <div className="max-w-4xl mx-auto px-6 py-3 flex items-center gap-4">
-          <button onClick={() => router.push('/')} className="text-neutral-400 hover:text-black transition-colors cursor-pointer" title="Back">
+          <button onClick={() => router.push('/')} className="text-black hover:text-neutral-600 transition-colors cursor-pointer" title="Back">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 4l-6 6 6 6" /></svg>
           </button>
           <span className="font-mono text-lg font-bold tracking-tight">protoclone</span>
@@ -237,7 +237,7 @@ export default function ProtocolEditorPage() {
                 className={`px-3 py-1.5 text-xs rounded border cursor-pointer ${
                   protocol.isPublic
                     ? 'border-green-300 text-green-700 bg-green-50'
-                    : 'border-neutral-200 text-neutral-500'
+                    : 'border-neutral-200 text-black'
                 }`}
               >
                 {protocol.isPublic ? 'Public' : 'Private'}
@@ -245,24 +245,24 @@ export default function ProtocolEditorPage() {
             </>
           )}
 
-          <button onClick={handleFork} className="px-3 py-1.5 text-xs border border-neutral-200 rounded text-neutral-500 hover:border-neutral-400 hover:text-black cursor-pointer">
+          <button onClick={handleFork} className="px-3 py-1.5 text-xs border border-neutral-200 rounded text-black hover:border-neutral-400 cursor-pointer">
             Fork
           </button>
-          <button onClick={handleStartRun} className="px-3 py-1.5 text-xs border border-neutral-200 rounded text-neutral-500 hover:border-neutral-400 hover:text-black cursor-pointer">
+          <button onClick={handleStartRun} className="px-3 py-1.5 text-xs border border-neutral-200 rounded text-black hover:border-neutral-400 cursor-pointer">
             Run
           </button>
-          <button onClick={() => window.open(`/protocol/${protocol.id}/print`, '_blank')} className="px-3 py-1.5 text-xs border border-neutral-200 rounded text-neutral-500 hover:border-neutral-400 hover:text-black cursor-pointer">
+          <button onClick={() => window.open(`/protocol/${protocol.id}/print`, '_blank')} className="px-3 py-1.5 text-xs border border-neutral-200 rounded text-black hover:border-neutral-400 cursor-pointer">
             Export PDF
           </button>
           <button
             onClick={() => setShowVersions(!showVersions)}
-            className={`px-3 py-1.5 text-xs border rounded cursor-pointer ${showVersions ? 'border-neutral-400 bg-neutral-50 text-black' : 'border-neutral-200 text-neutral-500 hover:border-neutral-400'}`}
+            className={`px-3 py-1.5 text-xs border rounded cursor-pointer ${showVersions ? 'border-neutral-400 bg-neutral-50 text-black' : 'border-neutral-200 text-black hover:border-neutral-400'}`}
           >
             History
           </button>
           <button
             onClick={() => setShowRuns(!showRuns)}
-            className={`px-3 py-1.5 text-xs border rounded cursor-pointer ${showRuns ? 'border-neutral-400 bg-neutral-50 text-black' : 'border-neutral-200 text-neutral-500 hover:border-neutral-400'}`}
+            className={`px-3 py-1.5 text-xs border rounded cursor-pointer ${showRuns ? 'border-neutral-400 bg-neutral-50 text-black' : 'border-neutral-200 text-black hover:border-neutral-400'}`}
           >
             Runs {runs.length > 0 && `(${runs.length})`}
           </button>
@@ -282,7 +282,7 @@ export default function ProtocolEditorPage() {
         {/* Runs panel */}
         {showRuns && runs.length > 0 && (
           <div className="mb-8 border border-neutral-200 rounded-lg p-4">
-            <h3 className="font-mono text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-3">Runs</h3>
+            <h3 className="font-mono text-xs font-semibold text-black uppercase tracking-widest mb-3">Runs</h3>
             <div className="space-y-2">
               {runs.map((run) => (
                 <button
@@ -302,7 +302,7 @@ export default function ProtocolEditorPage() {
 
         {/* Steps */}
         <div className="mb-6">
-          <h2 className="font-mono text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-4">Steps</h2>
+          <h2 className="font-mono text-xs font-semibold text-black uppercase tracking-widest mb-4">Steps</h2>
 
           {protocol.steps.length === 0 ? (
             <div className="text-center py-12 border border-dashed border-neutral-200 rounded-lg">
@@ -345,7 +345,7 @@ export default function ProtocolEditorPage() {
           {isOwner && (
             <button
               onClick={addStep}
-              className="mt-4 w-full py-3 border border-dashed border-neutral-300 rounded-lg text-sm text-neutral-400 hover:border-neutral-400 hover:text-neutral-600 transition-colors cursor-pointer"
+              className="mt-4 w-full py-3 border border-dashed border-neutral-300 rounded-lg text-sm text-black hover:border-neutral-400 transition-colors cursor-pointer"
             >
               + Add Step
             </button>

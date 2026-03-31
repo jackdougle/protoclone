@@ -277,7 +277,7 @@ export default function StepItem({ step, index, isFirst, isLast, onUpdate, onDel
               className={`inline-flex items-center gap-1 px-2 py-1 text-[11px] rounded-md border transition-colors cursor-pointer ${
                 inserting === btn.type
                   ? 'border-neutral-400 bg-neutral-50 text-neutral-700'
-                  : 'border-neutral-200 text-neutral-400 hover:border-neutral-300 hover:text-neutral-600'
+                  : 'border-neutral-200 text-black hover:border-neutral-300'
               }`}
             >
               <span className={`w-1.5 h-1.5 rounded-full ${dotColors[btn.type]}`} />

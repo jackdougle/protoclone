@@ -112,7 +112,7 @@ export default function Home() {
           <>
             {/* My protocols */}
             <section className="mb-10">
-              <h2 className="font-mono text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-4">
+              <h2 className="font-mono text-xs font-semibold text-black uppercase tracking-widest mb-4">
                 My Protocols
               </h2>
               {mine.length === 0 ? (
@@ -136,7 +136,7 @@ export default function Home() {
             {/* Public protocols from others */}
             {shared.length > 0 && (
               <section>
-                <h2 className="font-mono text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-4">
+                <h2 className="font-mono text-xs font-semibold text-black uppercase tracking-widest mb-4">
                   Public Protocols
                 </h2>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

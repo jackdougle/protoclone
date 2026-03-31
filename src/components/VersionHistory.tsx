@@ -50,7 +50,7 @@ export default function VersionHistory({ protocolId, isOwner, onRestore }: Props
 
   return (
     <div className="border border-neutral-200 rounded-lg p-4">
-      <h3 className="font-mono text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-3">
+      <h3 className="font-mono text-xs font-semibold text-black uppercase tracking-widest mb-3">
         Version History
       </h3>
 
@@ -69,7 +69,7 @@ export default function VersionHistory({ protocolId, isOwner, onRestore }: Props
                 <button
                   onClick={() => handleRestore(v.id)}
                   disabled={restoring === v.id}
-                  className="text-xs text-neutral-400 hover:text-black underline underline-offset-2 cursor-pointer disabled:opacity-50"
+                  className="text-xs text-black underline underline-offset-2 cursor-pointer disabled:opacity-50"
                 >
                   {restoring === v.id ? 'Restoring...' : 'Restore'}
                 </button>

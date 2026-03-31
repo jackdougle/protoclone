@@ -123,7 +123,7 @@ export default function RunPage() {
     <div className="min-h-screen">
       <header className="border-b border-neutral-200 sticky top-0 bg-white z-10">
         <div className="max-w-4xl mx-auto px-6 py-3 flex items-center gap-4">
-          <button onClick={() => router.push(`/protocol/${protocolId}`)} className="text-neutral-400 hover:text-black transition-colors cursor-pointer">
+          <button onClick={() => router.push(`/protocol/${protocolId}`)} className="text-black hover:text-neutral-600 transition-colors cursor-pointer">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 4l-6 6 6 6" /></svg>
           </button>
           <span className="font-mono text-lg font-bold tracking-tight">protoclone</span>

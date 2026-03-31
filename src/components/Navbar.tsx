@@ -15,10 +15,10 @@ export default function Navbar() {
           protoclone
         </Link>
         <div className="flex items-center gap-4">
-          <span className="text-sm text-neutral-500">{session.user?.name || session.user?.email}</span>
+          <span className="font-mono text-xs text-black">{session.user?.name || session.user?.email}</span>
           <button
             onClick={() => signOut({ callbackUrl: '/login' })}
-            className="text-sm text-neutral-400 hover:text-black transition-colors cursor-pointer"
+            className="font-mono text-xs text-black hover:text-neutral-500 transition-colors cursor-pointer"
           >
             Sign out
           </button>

@@ -58,7 +58,7 @@ export default function PrintPage() {
         </button>
         <button
           onClick={() => window.close()}
-          className="px-4 py-2 text-sm text-neutral-500 hover:text-black cursor-pointer"
+          className="px-4 py-2 text-sm text-black cursor-pointer"
         >
           Close
         </button>
@@ -76,7 +76,7 @@ export default function PrintPage() {
 
       <hr className="border-neutral-200 mb-6" />
 
-      <h2 className="font-mono text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-4">Steps</h2>
+      <h2 className="font-mono text-xs font-semibold text-black uppercase tracking-widest mb-4">Steps</h2>
 
       <ol className="space-y-4">
         {protocol.steps.map((step, idx) => (

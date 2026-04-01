@@ -66,19 +66,6 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="my-6 flex items-center gap-3">
-          <div className="flex-1 h-px bg-neutral-200" />
-          <span className="text-xs text-neutral-400">or</span>
-          <div className="flex-1 h-px bg-neutral-200" />
-        </div>
-
-        <button
-          onClick={() => signIn('google', { callbackUrl: '/' })}
-          className="w-full py-3 border border-neutral-200 text-sm font-medium rounded-lg hover:bg-neutral-50 transition-colors cursor-pointer"
-        >
-          Continue with Google
-        </button>
-
         <p className="mt-6 text-center text-sm text-neutral-500">
           Don&apos;t have an account?{' '}
           <Link href="/register" className="text-black underline underline-offset-2">

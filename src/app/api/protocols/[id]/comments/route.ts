@@ -1,5 +1,6 @@
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { canAccessProtocol } from "@/lib/access"
 import { NextResponse } from "next/server"
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -7,6 +8,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   const session = await auth()
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  const { canView } = await canAccessProtocol(id, session.user.id)
+  if (!canView) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
 
   const comments = await prisma.comment.findMany({
@@ -23,6 +29,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const session = await auth()
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  const { canView } = await canAccessProtocol(id, session.user.id)
+  if (!canView) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
 
   const { stepId, content } = await req.json()

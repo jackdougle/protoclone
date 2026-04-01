@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import Navbar from '@/components/Navbar';
 import * as api from '@/lib/api';
 
 interface ProtocolSummary {
@@ -15,7 +14,9 @@ interface ProtocolSummary {
   authorId: string;
   author: { id: string; name: string | null; email: string };
   parent: { id: string; title: string } | null;
-  _count: { forks: number; versions: number; runs: number; comments: number };
+  group: { id: string; name: string } | null;
+  collaborators?: { userId: string }[];
+  _count: { forks: number; versions: number; runs: number; comments: number; collaborators?: number };
   createdAt: string;
   updatedAt: string;
 }
@@ -35,8 +36,13 @@ export default function Home() {
     p.title.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const mine = filtered.filter((p) => p.authorId === session?.user?.id);
-  const shared = filtered.filter((p) => p.authorId !== session?.user?.id && p.isPublic);
+  const mine = filtered.filter((p) => p.authorId === session?.user?.id && !p.group);
+  const sharedWithMe = filtered.filter(
+    (p) => p.authorId !== session?.user?.id && !p.group && p.collaborators?.some((c) => c.userId === session?.user?.id),
+  );
+  const publicOthers = filtered.filter(
+    (p) => p.authorId !== session?.user?.id && !p.group && p.isPublic && !p.collaborators?.some((c) => c.userId === session?.user?.id),
+  );
 
   async function handleCreate() {
     const protocol = await api.createProtocol({ title: 'Untitled Protocol' });
@@ -48,7 +54,7 @@ export default function Home() {
     setProtocols((prev) => prev.filter((p) => p.id !== id));
   }
 
-  function ProtocolCard({ p }: { p: ProtocolSummary }) {
+  function ProtocolCard({ p, showAuthor }: { p: ProtocolSummary; showAuthor?: string }) {
     const isOwner = p.authorId === session?.user?.id;
     return (
       <div className="border border-neutral-200 rounded-lg p-5 hover:border-neutral-400 transition-colors group relative">
@@ -77,8 +83,8 @@ export default function Home() {
             {p.isPublic && <span className="text-green-600">Public</span>}
             <span>{new Date(p.updatedAt).toLocaleDateString()}</span>
           </div>
-          {!isOwner && (
-            <p className="text-[11px] text-neutral-400 mt-1">by {p.author.name || p.author.email}</p>
+          {showAuthor && (
+            <p className="text-[11px] text-neutral-400 mt-1">{showAuthor}</p>
           )}
         </div>
       </div>
@@ -86,67 +92,79 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
+    <main className="max-w-5xl mx-auto px-6 py-8">
+      <div className="flex items-center gap-4 mb-8">
+        <input
+          type="text"
+          placeholder="Search protocols by title..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-1 px-4 py-3 border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-neutral-400 transition-colors"
+        />
+        <button
+          onClick={handleCreate}
+          className="px-4 py-3 bg-black text-white text-sm font-medium rounded-lg hover:bg-neutral-800 transition-colors cursor-pointer whitespace-nowrap"
+        >
+          + New Protocol
+        </button>
+      </div>
 
-      <main className="max-w-5xl mx-auto px-6 py-8">
-        <div className="flex items-center gap-4 mb-8">
-          <input
-            type="text"
-            placeholder="Search protocols by title..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 px-4 py-3 border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-neutral-400 transition-colors"
-          />
-          <button
-            onClick={handleCreate}
-            className="px-4 py-3 bg-black text-white text-sm font-medium rounded-lg hover:bg-neutral-800 transition-colors cursor-pointer whitespace-nowrap"
-          >
-            + New Protocol
-          </button>
-        </div>
+      {loading ? (
+        <div className="text-center py-20 text-neutral-400 text-sm">Loading...</div>
+      ) : (
+        <>
+          {/* My protocols */}
+          <section className="mb-10">
+            <h2 className="font-mono text-xs font-semibold text-black uppercase tracking-widest mb-4">
+              My Protocols
+            </h2>
+            {mine.length === 0 ? (
+              <div className="text-center py-12 border border-dashed border-neutral-200 rounded-lg">
+                <p className="text-neutral-400 text-sm">
+                  {search ? 'No protocols match your search.' : 'No protocols yet.'}
+                </p>
+                {!search && (
+                  <button onClick={handleCreate} className="mt-3 text-sm text-black underline underline-offset-2 hover:no-underline cursor-pointer">
+                    Create your first protocol
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {mine.map((p) => <ProtocolCard key={p.id} p={p} />)}
+              </div>
+            )}
+          </section>
 
-        {loading ? (
-          <div className="text-center py-20 text-neutral-400 text-sm">Loading...</div>
-        ) : (
-          <>
-            {/* My protocols */}
+          {/* Shared with me */}
+          {sharedWithMe.length > 0 && (
             <section className="mb-10">
               <h2 className="font-mono text-xs font-semibold text-black uppercase tracking-widest mb-4">
-                My Protocols
+                Shared With Me
               </h2>
-              {mine.length === 0 ? (
-                <div className="text-center py-12 border border-dashed border-neutral-200 rounded-lg">
-                  <p className="text-neutral-400 text-sm">
-                    {search ? 'No protocols match your search.' : 'No protocols yet.'}
-                  </p>
-                  {!search && (
-                    <button onClick={handleCreate} className="mt-3 text-sm text-black underline underline-offset-2 hover:no-underline cursor-pointer">
-                      Create your first protocol
-                    </button>
-                  )}
-                </div>
-              ) : (
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {mine.map((p) => <ProtocolCard key={p.id} p={p} />)}
-                </div>
-              )}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {sharedWithMe.map((p) => (
+                  <ProtocolCard key={p.id} p={p} showAuthor={`shared by ${p.author.name || p.author.email}`} />
+                ))}
+              </div>
             </section>
+          )}
 
-            {/* Public protocols from others */}
-            {shared.length > 0 && (
-              <section>
-                <h2 className="font-mono text-xs font-semibold text-black uppercase tracking-widest mb-4">
-                  Public Protocols
-                </h2>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {shared.map((p) => <ProtocolCard key={p.id} p={p} />)}
-                </div>
-              </section>
-            )}
-          </>
-        )}
-      </main>
-    </div>
+          {/* Public protocols from others */}
+          {publicOthers.length > 0 && (
+            <section>
+              <h2 className="font-mono text-xs font-semibold text-black uppercase tracking-widest mb-4">
+                Public Protocols
+              </h2>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {publicOthers.map((p) => (
+                  <ProtocolCard key={p.id} p={p} showAuthor={`by ${p.author.name || p.author.email}`} />
+                ))}
+              </div>
+            </section>
+          )}
+        </>
+      )}
+    </main>
   );
 }

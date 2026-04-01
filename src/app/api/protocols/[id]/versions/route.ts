@@ -1,5 +1,6 @@
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { canAccessProtocol } from "@/lib/access"
 import { NextResponse } from "next/server"
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -24,8 +25,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const protocol = await prisma.protocol.findUnique({ where: { id } })
-  if (!protocol || protocol.authorId !== session.user.id) {
+  const { protocol, canEdit } = await canAccessProtocol(id, session.user.id)
+  if (!protocol || !canEdit) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
 
@@ -57,8 +58,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const protocol = await prisma.protocol.findUnique({ where: { id } })
-  if (!protocol || protocol.authorId !== session.user.id) {
+  const { canEdit } = await canAccessProtocol(id, session.user.id)
+  if (!canEdit) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
 

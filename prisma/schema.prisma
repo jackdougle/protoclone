@@ -19,6 +19,9 @@ model User {
   protocols     Protocol[]
   comments      Comment[]
   runs          ProtocolRun[]
+  collaborations ProtocolCollaborator[]
+  groupMemberships GroupMember[]
+  createdGroups Group[] @relation("GroupCreator")
   createdAt     DateTime  @default(now())
 }
 
@@ -56,6 +59,30 @@ model VerificationToken {
   @@id([identifier, token])
 }
 
+model Group {
+  id          String        @id @default(cuid())
+  name        String
+  description String        @default("")
+  createdBy   String
+  creator     User          @relation("GroupCreator", fields: [createdBy], references: [id], onDelete: Cascade)
+  members     GroupMember[]
+  protocols   Protocol[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model GroupMember {
+  id       String   @id @default(cuid())
+  groupId  String
+  group    Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role     String   @default("member")
+  joinedAt DateTime @default(now())
+
+  @@unique([groupId, userId])
+}
+
 model Protocol {
   id          String    @id @default(cuid())
   title       String
@@ -67,9 +94,12 @@ model Protocol {
   parentId    String?
   parent      Protocol? @relation("Forks", fields: [parentId], references: [id])
   forks       Protocol[] @relation("Forks")
+  groupId     String?
+  group       Group?    @relation(fields: [groupId], references: [id], onDelete: SetNull)
   versions    ProtocolVersion[]
   comments    Comment[]
   runs        ProtocolRun[]
+  collaborators ProtocolCollaborator[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
@@ -107,4 +137,15 @@ model ProtocolRun {
   stepStates  String    @default("{}")
   startedAt   DateTime  @default(now())
   completedAt DateTime?
+}
+
+model ProtocolCollaborator {
+  id          String   @id @default(cuid())
+  protocolId  String
+  protocol    Protocol @relation(fields: [protocolId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  addedAt     DateTime @default(now())
+
+  @@unique([protocolId, userId])
 }

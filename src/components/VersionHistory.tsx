@@ -15,11 +15,11 @@ interface Version {
 
 interface Props {
   protocolId: string;
-  isOwner: boolean;
+  canEdit: boolean;
   onRestore: (protocol: any) => void;
 }
 
-export default function VersionHistory({ protocolId, isOwner, onRestore }: Props) {
+export default function VersionHistory({ protocolId, canEdit, onRestore }: Props) {
   const [versions, setVersions] = useState<Version[]>([]);
   const [loading, setLoading] = useState(true);
   const [restoring, setRestoring] = useState<string | null>(null);
@@ -65,7 +65,7 @@ export default function VersionHistory({ protocolId, isOwner, onRestore }: Props
                 {v.message && <span className="text-xs text-neutral-600 ml-2">{v.message}</span>}
                 <span className="text-xs text-neutral-400 ml-2">{new Date(v.createdAt).toLocaleString()}</span>
               </div>
-              {isOwner && (
+              {canEdit && (
                 <button
                   onClick={() => handleRestore(v.id)}
                   disabled={restoring === v.id}

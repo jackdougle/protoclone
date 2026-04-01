@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import AuthProvider from '@/components/AuthProvider';
+import Navbar from '@/components/Navbar';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -17,7 +18,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="font-sans bg-white text-black antialiased">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <Navbar />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

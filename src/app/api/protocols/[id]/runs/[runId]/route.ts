@@ -1,5 +1,6 @@
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { canAccessProtocol } from "@/lib/access"
 import { NextResponse } from "next/server"
 
 export async function GET(
@@ -14,11 +15,23 @@ export async function GET(
 
   const run = await prisma.protocolRun.findUnique({
     where: { id: runId },
-    include: { protocol: true },
+    include: {
+      protocol: true,
+      user: { select: { id: true, name: true, email: true } },
+    },
   })
 
-  if (!run || run.protocolId !== id || run.userId !== session.user.id) {
+  if (!run || run.protocolId !== id) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
+  }
+
+  // Allow access if it's the user's own run, or if they're an owner/collaborator
+  const isOwnRun = run.userId === session.user.id
+  if (!isOwnRun) {
+    const { canEdit } = await canAccessProtocol(id, session.user.id)
+    if (!canEdit) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 })
+    }
   }
 
   return NextResponse.json({
@@ -38,6 +51,7 @@ export async function PUT(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
+  // Only the run's owner can update it
   const run = await prisma.protocolRun.findUnique({ where: { id: runId } })
   if (!run || run.protocolId !== id || run.userId !== session.user.id) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })

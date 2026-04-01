@@ -1,5 +1,6 @@
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { canAccessProtocol } from "@/lib/access"
 import { NextResponse } from "next/server"
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -9,8 +10,17 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
+  const { canEdit } = await canAccessProtocol(id, session.user.id)
+
+  // Owner/collaborators see all group runs; public viewers see only their own
   const runs = await prisma.protocolRun.findMany({
-    where: { protocolId: id, userId: session.user.id },
+    where: {
+      protocolId: id,
+      ...(canEdit ? {} : { userId: session.user.id }),
+    },
+    include: {
+      user: { select: { id: true, name: true, email: true } },
+    },
     orderBy: { startedAt: "desc" },
   })
 
@@ -26,8 +36,8 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const protocol = await prisma.protocol.findUnique({ where: { id } })
-  if (!protocol) {
+  const { canView } = await canAccessProtocol(id, session.user.id)
+  if (!canView) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
 
@@ -35,6 +45,9 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     data: {
       protocolId: id,
       userId: session.user.id,
+    },
+    include: {
+      user: { select: { id: true, name: true, email: true } },
     },
   })
 

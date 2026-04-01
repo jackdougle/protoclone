@@ -1,3 +1,3 @@
 # Protoclone
 
-A vibe-coded, lightweight, and functional protocol editor.
+A lightweight editor for wet lab protocols.

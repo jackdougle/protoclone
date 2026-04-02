@@ -25,7 +25,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       protocols: {
         include: {
           author: { select: { id: true, name: true, email: true } },
-          _count: { select: { steps: false, forks: true, versions: true, runs: true, comments: true } },
+          _count: { select: { forks: true, versions: true, runs: true, comments: true } },
         },
         orderBy: { updatedAt: "desc" },
       },

@@ -57,6 +57,12 @@ export default function LoginPage() {
             className="w-full px-4 py-3 border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-neutral-400"
           />
 
+          <div className="text-right">
+            <Link href="/forgot-password" className="text-sm text-neutral-500 underline underline-offset-2 hover:text-black">
+              Forgot password?
+            </Link>
+          </div>
+
           <button
             type="submit"
             disabled={loading}

@@ -22,7 +22,7 @@ export default function ForgotPasswordPage() {
       });
 
       if (!res.ok) {
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
         throw new Error(data.error || 'Something went wrong');
       }
 
